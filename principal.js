@@ -11,6 +11,61 @@ var numeroPinchos = 2;
 var gameOver = false;
 var teclaDerecha, teclaIzquierda, teclaArriba, teclaAbajo;
 
+// --- NUEVO ESTADO: PORTADA ---
+var estadoPortada = {
+    preload: function () {
+        juego.load.image('fondo', 'fondo3.jpg');
+    },
+    create: function () {
+        var fondo = juego.add.tileSprite(0, 0, 370, 550, 'fondo');
+
+        var titulo = juego.add.text(juego.width / 2, 180, "AVENTURA PIXELADA", {
+            font: "bold 28px Arial",
+            fill: "#FFD700",
+            stroke: "#8B4513",
+            strokeThickness: 5
+        });
+        titulo.anchor.set(0.5);
+
+        var nombre = juego.add.text(juego.width / 2, 230, "Por: Arnie Adriano", {
+            font: "bold 20px Arial",
+            fill: "#FFFFFF",
+            stroke: "#000000",
+            strokeThickness: 4
+        });
+        nombre.anchor.set(0.5);
+
+        var boton = juego.add.text(juego.width / 2, 320, "INGRESAR", {
+            font: "bold 22px Arial",
+            fill: "#00FF00",
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            padding: 10,
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 3
+        });
+        boton.anchor.set(0.5);
+        boton.inputEnabled = true;
+
+        // animación del botón (efecto parpadeo)
+        juego.add.tween(boton).to({ alpha: 0.5 }, 800, Phaser.Easing.Cubic.InOut, true, 0, -1, true);
+
+        boton.events.onInputDown.add(function () {
+            // transición con un pequeño efecto
+            var fade = juego.add.graphics(0, 0);
+            fade.beginFill(0x000000, 1);
+            fade.drawRect(0, 0, juego.width, juego.height);
+            fade.endFill();
+            fade.alpha = 0;
+
+            var tween = juego.add.tween(fade).to({ alpha: 1 }, 500, Phaser.Easing.Cubic.Out, true);
+            tween.onComplete.add(function () {
+                juego.state.start('principal');
+            });
+        });
+    }
+};
+
 var estadoPrincipal = {
     preload: function (){
         juego.load.image('fondo', 'fondo3.jpg');
@@ -455,5 +510,6 @@ function iniciarAudio() {
     }
 }
 
+juego.state.add('portada', estadoPortada);
 juego.state.add('principal', estadoPrincipal);
-juego.state.start('principal');
+juego.state.start('portada'); // <- antes era 'principal'
